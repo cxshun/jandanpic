@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shun.jiandanpic.mapper.InstanceMapper">
+    <resultMap id="resultMap" type="com.shun.jiandanpic.domain.Instance">
+        <id property="id" column="id" jdbcType="BIGINT" />
+        <result property="page" column="page" jdbcType="INTEGER" />
+        <result property="size" column="size" jdbcType="INTEGER" />
+        <result property="createTime" column="create_time" jdbcType="DATETIME" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.shun.jiandanpic.domain.Instance">
+        insert into instance(page, size, create_time) values(#{page, jdbcType=INTEGER}, #{size, jdbcType=INTEGER}, #{createTime, jdbcType=DATETIME})
+    </insert>
+
+    <sql id="update">
+        update instance set page=#{page, jdbcType=INTEGER}, size=#{size,jdbcType=INTEGER}, create_time=#{createTime,jdbcType=DATETIME} where id = #{id, jdbcType=BIGINT}
+    </sql>
+
+    <delete id="delete" parameterType="int">
+        delete from instance where id = #{id, jdbcType=INTEGER}
+    </delete>
+
+    <select id="list" parameterType="com.shun.jiandanpic.util.PageInfo">
+        select * from instance limit (#{page, jdbcType=INTEGER} - 1) * #{page, jdbcType=INTEGER}), #{size, jdbcType=INTEGER}
+    </select>
+</mapper>
