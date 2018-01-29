@@ -1,6 +1,6 @@
-package com.shun.jiandanpic.mapper;
+package com.shun.jandanpic.mapper;
 
-import com.shun.jiandanpic.util.PageInfo;
+import com.shun.jandanpic.util.PageInfo;
 
 import java.util.List;
 

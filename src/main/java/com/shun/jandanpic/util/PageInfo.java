@@ -1,4 +1,4 @@
-package com.shun.jiandanpic.util;
+package com.shun.jandanpic.util;
 
 /**
  * shun

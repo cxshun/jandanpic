@@ -1,4 +1,4 @@
-package com.shun.jiandanpic.domain;
+package com.shun.jandanpic.domain;
 
 import java.util.Date;
 

@@ -1,13 +1,10 @@
-package com.shun.jiandanpic;
+package com.shun.jandanpic;
 
-import com.shun.jiandanpic.domain.Instance;
-import com.shun.jiandanpic.service.InstanceService;
+import com.shun.jandanpic.processor.JiandanCrawler;
+import com.shun.jandanpic.service.InstanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Date;
 
 /**
  * shun
@@ -19,6 +16,8 @@ public class InstanceController {
 
     @Autowired
     private InstanceService instanceService;
+    @Autowired
+    private JiandanCrawler crawler;
 
     /**
      * 增加运行记录
@@ -27,13 +26,15 @@ public class InstanceController {
      * @return
      */
     @RequestMapping("process")
-    public String process(@RequestParam("page") int page, @RequestParam("size") int size) {
-        Instance instance = new Instance();
+    public String process(/*@RequestParam(value = "page", required = false) int page, @RequestParam(value = "size", required = false) int size/)**/) {
+        /*Instance instance = new Instance();
         instance.setCreateTime(new Date());
         instance.setPage(page);
         instance.setSize(size);
-        instanceService.insert(instance);
-        return null;
+        instanceService.insert(instance);*/
+
+        crawler.crawl("http://jandan.net/ooxx");
+        return "success";
     }
 
 }

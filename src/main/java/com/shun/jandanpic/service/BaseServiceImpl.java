@@ -1,7 +1,7 @@
-package com.shun.jiandanpic.service;
+package com.shun.jandanpic.service;
 
-import com.shun.jiandanpic.mapper.BaseMapper;
-import com.shun.jiandanpic.util.PageInfo;
+import com.shun.jandanpic.mapper.BaseMapper;
+import com.shun.jandanpic.util.PageInfo;
 
 import java.util.List;
 

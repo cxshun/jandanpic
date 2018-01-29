@@ -1,6 +1,6 @@
-package com.shun.jiandanpic.mapper;
+package com.shun.jandanpic.mapper;
 
-import com.shun.jiandanpic.domain.Instance;
+import com.shun.jandanpic.domain.Instance;
 import org.springframework.stereotype.Repository;
 
 /**

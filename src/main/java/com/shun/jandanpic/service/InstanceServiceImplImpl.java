@@ -1,8 +1,8 @@
-package com.shun.jiandanpic.service;
+package com.shun.jandanpic.service;
 
-import com.shun.jiandanpic.domain.Instance;
-import com.shun.jiandanpic.mapper.BaseMapper;
-import com.shun.jiandanpic.mapper.InstanceMapper;
+import com.shun.jandanpic.domain.Instance;
+import com.shun.jandanpic.mapper.BaseMapper;
+import com.shun.jandanpic.mapper.InstanceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

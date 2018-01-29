@@ -1,6 +1,6 @@
-package com.shun.jiandanpic.service;
+package com.shun.jandanpic.service;
 
-import com.shun.jiandanpic.domain.Instance;
+import com.shun.jandanpic.domain.Instance;
 
 /**
  * shun
