@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collections;
+
 /**
  * shun
  * 2018-01-28
@@ -33,7 +35,7 @@ public class InstanceController {
         instance.setSize(size);
         instanceService.insert(instance);*/
 
-        crawler.crawl("http://jandan.net/ooxx");
+        crawler.crawl(Collections.singletonList("http://jandan.net/ooxx"));
         return "success";
     }
 
