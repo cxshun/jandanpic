@@ -10,8 +10,16 @@ package com.shun.jandanpic.search;
  */
 public class BaseSearch {
 
+    private int offset;
     private int size;
-    private int page;
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 
     public int getSize() {
         return size;
@@ -19,13 +27,5 @@ public class BaseSearch {
 
     public void setSize(int size) {
         this.size = size;
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
     }
 }

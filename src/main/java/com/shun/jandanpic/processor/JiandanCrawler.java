@@ -1,5 +1,10 @@
 package com.shun.jandanpic.processor;
 
+import com.shun.jandanpic.constant.InstanceConstant;
+import com.shun.jandanpic.domain.Instance;
+import com.shun.jandanpic.exception.BusinessException;
+import com.shun.jandanpic.search.InstanceSearch;
+import com.shun.jandanpic.service.InstanceService;
 import com.shun.jandanpic.util.LoggerUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -11,6 +16,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <br/>==========================
@@ -29,6 +37,10 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class JiandanCrawler implements DownloadProcessor, PageExtractor{
+
+    @Autowired
+    private InstanceService instanceService;
+
     @Override
     public void process(List<String> urlList) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -60,13 +72,17 @@ public class JiandanCrawler implements DownloadProcessor, PageExtractor{
         });
     }
 
-    @Override
-    public List<String> extractXPath(String url, String xpath) {
+    private static final WebDriver driver;
+    static {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\shun\\Downloads\\chromedriver_win32\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
+        options.setProxy(null);
+        driver = new ChromeDriver(options);
+    }
 
-        WebDriver driver = new ChromeDriver(options);
+    @Override
+    public List<String> extractXPath(String url, String xpath) {
         driver.get(url);
 
         List<String> resultList = new ArrayList<>();
@@ -78,7 +94,7 @@ public class JiandanCrawler implements DownloadProcessor, PageExtractor{
         return resultList;
     }
 
-    private static final String PAGE_XPATH = "//div[@class='cp-pagenavi']//a";
+    private static final String PAGE_XPATH = "//div[@class='cp-pagenavi']//a[@class!='previous-comment-page']";
     private static final String IMAGE_XPATH = "//div[@class='row']/div[@class='text']/p/img";
 
     private static final Map<String, String> xpathMap;
@@ -89,24 +105,43 @@ public class JiandanCrawler implements DownloadProcessor, PageExtractor{
     }
 
     private static final List<String> processedPageUrlList = new ArrayList<>();
+    private Pattern pagePattern = Pattern.compile("page-(\\d*)");
 
-    public void crawl(List<String> pageUrlList) {
-        pageUrlList.forEach(pageUrl -> {
+    public void crawl(List<String> pageUrlList, Integer fromPage, Integer toPage) {
+        pageUrlList.stream().distinct().forEach(pageUrl -> {
             if (!processedPageUrlList.contains(pageUrl)) {
                 LoggerUtils.info("正在爬取页面:[{}]", pageUrlList);
 
-                processedPageUrlList.add(pageUrl);
-                //暂停5秒，避免对煎蛋服务器造成太大压力
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e) {
-                    LoggerUtils.error(e, e.getMessage());
+                //通过正则表达式，匹配URL中的页码
+                Matcher matcher = pagePattern.matcher(pageUrl);
+                if (matcher.find()) {
+                    int page = Integer.parseInt(matcher.group(1));
+                    if (page >= fromPage && page <= toPage) {
+                        processedPageUrlList.add(pageUrl);
+                        //暂停5秒，避免对煎蛋服务器造成太大压力
+                        try {
+                            TimeUnit.SECONDS.sleep(5);
+                        } catch (InterruptedException e) {
+                            LoggerUtils.error(e, e.getMessage());
+                        }
+                        LoggerUtils.info("正在抽取:[{}]的图片地址", pageUrl);
+                        List<String> imageUrlList = extractXPath(pageUrl, IMAGE_XPATH);
+                        process(imageUrlList);
+                    }
                 }
-                LoggerUtils.info("正在抽取:[{}]的图片地址", pageUrl);
-                List<String> imageUrlList = extractXPath(pageUrl, IMAGE_XPATH);
-                process(imageUrlList);
+                crawl(extractXPath(pageUrl, PAGE_XPATH), fromPage, toPage);
+            }
+        });
 
-                crawl(extractXPath(pageUrl, PAGE_XPATH));
+        //更新运行实例的状态
+        InstanceSearch instanceSearch = new InstanceSearch();
+        instanceSearch.setStatus(InstanceConstant.Status.RUNNING);
+        List<Instance> instanceList = instanceService.list(instanceSearch);
+        instanceList.forEach(instance -> {
+            try {
+                instanceService.update(instance);
+            } catch (BusinessException e) {
+                LoggerUtils.error(e, e.getMessage());
             }
         });
     }

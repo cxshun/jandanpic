@@ -1,5 +1,6 @@
 package com.shun.jandanpic.mapper;
 
+import com.shun.jandanpic.search.BaseSearch;
 import com.shun.jandanpic.util.PageInfo;
 
 import java.util.List;
@@ -33,8 +34,8 @@ public interface BaseMapper<T> {
 
     /**
      * 获取记录列表
-     * @param page
+     * @param search
      * @return
      */
-    List<T> list(PageInfo page);
+    List<T> list(BaseSearch search);
 }

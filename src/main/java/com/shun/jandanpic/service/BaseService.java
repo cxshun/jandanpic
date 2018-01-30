@@ -1,5 +1,7 @@
 package com.shun.jandanpic.service;
 
+import com.shun.jandanpic.exception.BusinessException;
+import com.shun.jandanpic.search.BaseSearch;
 import com.shun.jandanpic.util.PageInfo;
 
 import java.util.List;
@@ -10,12 +12,12 @@ import java.util.List;
  **/
 public interface BaseService<T> {
 
-    boolean insert(T t);
+    boolean insert(T t) throws BusinessException;
 
-    boolean update(T t);
+    boolean update(T t) throws BusinessException;
 
-    boolean delete(long id);
+    boolean delete(long id) throws BusinessException;
 
-    List<T> list(PageInfo page);
+    List<T> list(BaseSearch search);
 
 }

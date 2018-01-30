@@ -9,9 +9,17 @@ import java.util.Date;
 public class Instance {
 
     private Long id;
-    private Integer page;
-    private Integer size;
+    private Integer fromPage;
+    private Integer toPage;
     private Date createTime;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Long getId() {
         return id;
@@ -20,18 +28,18 @@ public class Instance {
         this.id = id;
     }
 
-    public Integer getPage() {
-        return page;
+    public Integer getFromPage() {
+        return fromPage;
     }
-    public void setPage(Integer page) {
-        this.page = page;
+    public void setFromPage(Integer fromPage) {
+        this.fromPage = fromPage;
     }
 
-    public Integer getSize() {
-        return size;
+    public Integer getToPage() {
+        return toPage;
     }
-    public void setSize(Integer size) {
-        this.size = size;
+    public void setToPage(Integer toPage) {
+        this.toPage = toPage;
     }
 
     public Date getCreateTime() {

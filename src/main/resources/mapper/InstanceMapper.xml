@@ -12,18 +12,18 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.shun.jandanpic.domain.Instance">
-        insert into instance(page, size, create_time) values(#{page, jdbcType=INTEGER}, #{size, jdbcType=INTEGER}, #{createTime, jdbcType=TIMESTAMP})
+        insert into instance(from_page, to_page, create_time, status) values(#{fromPage, jdbcType=INTEGER}, #{toPage, jdbcType=INTEGER}, #{createTime, jdbcType=TIMESTAMP}, #{status, jdbcType=VARCHAR})
     </insert>
 
     <sql id="update">
-        update instance set page=#{page, jdbcType=INTEGER}, size=#{size,jdbcType=INTEGER}, create_time=#{createTime,jdbcType=TIMESTAMP} where id = #{id, jdbcType=BIGINT}
+        update instance set from_page=#{fromPage, jdbcType=INTEGER}, to_page=#{toPage,jdbcType=INTEGER}, status=#{status,jdbcType=VARCHAR} where id = #{id, jdbcType=BIGINT}
     </sql>
 
     <delete id="delete" parameterType="int">
         delete from instance where id = #{id, jdbcType=INTEGER}
     </delete>
 
-    <select id="list" parameterType="com.shun.jandanpic.search.InstanceSearch">
+    <select id="list" parameterType="com.shun.jandanpic.search.InstanceSearch" resultMap="resultMap">
         select id, from_page, to_page, create_time, status from instance
         <where>
             1 = 1
@@ -31,6 +31,6 @@
               and status = #{status, jdbcType=VARCHAR}
             </if>
         </where>
-        limit <![CDATA[(#{page, jdbcType=INTEGER} - 1) * #{page, jdbcType=INTEGER}]]><![CDATA[>]]>, #{size, jdbcType=INTEGER}
+        limit #{offset, jdbcType=INTEGER}, #{size, jdbcType=INTEGER}
     </select>
 </mapper>
