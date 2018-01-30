@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * <br/>==========================
@@ -91,10 +92,10 @@ public class JiandanCrawler implements DownloadProcessor, PageExtractor{
             resultList.add(webElement.getAttribute(xpathMap.get(xpath)));
         });
 
-        return resultList;
+        return resultList.stream().distinct().collect(Collectors.toList());
     }
 
-    private static final String PAGE_XPATH = "//div[@class='cp-pagenavi']//a[@class!='previous-comment-page']";
+    private static final String PAGE_XPATH = "//div[@class='cp-pagenavi']//a";
     private static final String IMAGE_XPATH = "//div[@class='row']/div[@class='text']/p/img";
 
     private static final Map<String, String> xpathMap;
@@ -117,7 +118,6 @@ public class JiandanCrawler implements DownloadProcessor, PageExtractor{
                 if (matcher.find()) {
                     int page = Integer.parseInt(matcher.group(1));
                     if (page >= fromPage && page <= toPage) {
-                        processedPageUrlList.add(pageUrl);
                         //暂停5秒，避免对煎蛋服务器造成太大压力
                         try {
                             TimeUnit.SECONDS.sleep(5);
@@ -129,6 +129,7 @@ public class JiandanCrawler implements DownloadProcessor, PageExtractor{
                         process(imageUrlList);
                     }
                 }
+                processedPageUrlList.add(pageUrl);
                 crawl(extractXPath(pageUrl, PAGE_XPATH), fromPage, toPage);
             }
         });
